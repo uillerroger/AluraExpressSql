@@ -1,19 +1,35 @@
-const express = require('express');
-const consign = require('consign')
-const bodyParser = require('body-parser')
+const Atendimento = require('../models/atendimentos')
 
-module.exports = ()=>{
+module.exports = app =>{
 
-    const app = express()
+    app.get('/atendimentos', (req, res) => {
+        Atendimento.lista(res)
+    });
 
-app.use(bodyParser.json());   
-app.use(bodyParser.urlencoded({extended: true}));
+    app.get('/atendimentos/:id', (req, res) =>{
+        const id =paseInt(req.params.id)
 
+        Atendimento.buscaPorID(id, res)
+    
+    })
 
-consign()
-    .include('controllers')
-    .into(app)
+    app.post('/atendimentos',(req, res) =>{
+        const atendimento = req.body
 
-    return(app)
+        atendimento.adiciona(atendimento, res)
+    });
+
+    app.patch('/atendimentos/:id', (req, res) =>{
+        const id = parseInt(req.params.id)
+        const valores = req.body
+
+        Atendimento.altera(id, valores, res)
+    })
+
+    app.delete('/atendimentos/:id', (req, res) =>{
+        const id = parseInt(req.params.id)
+
+        Atendimento.deleta(id, res)
+    })
 
 }
